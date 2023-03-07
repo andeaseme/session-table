@@ -1,25 +1,7 @@
 import * as moment from 'moment';
 
 
-export interface Session {
-  ID: string;
-  bt: number;
-  tt: number;
-  sr: number;
-  bit_depth: number;
-  channels: { name: string; }[];
-  blocks: {
-    bt: number;
-    tt: number;
-    local_path: string;
-    uploaded: boolean;
-    annotations: {
-      name: string;
-      bt: number;
-      tt: number;
-    }[];
-  }[];
-}
+
 
 /**
  * Timestamp is expected to be in milliseconds
