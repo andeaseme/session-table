@@ -1,66 +1,62 @@
-import React, { useState } from 'react';
-import TuneIcon from '@mui/icons-material/Tune';
-import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { styled } from '@mui/material/styles';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Drawer, Typography } from '@mui/material';
-
+import React, { useState } from 'react'
+import TuneIcon from '@mui/icons-material/Tune'
+import CloseIcon from '@mui/icons-material/Close'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { styled } from '@mui/material/styles'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Drawer, Typography } from '@mui/material'
 
 import {
   DateTimeFilter,
   MultilineOperatorFilter,
   renderSearchableFilter
-} from './FilterFunctions';
+} from './FilterFunctions'
 
-import { firstLetterStyle } from './tableStyles';
-import {Operator, Optional} from "./utility";
-
-
-
+import { firstLetterStyle } from './tableStyles'
+import { type Operator, type Optional } from './utility'
 
 interface DateFilterOption {
-  label: string;
-  options: 'date',
-  fromValue: Optional<number>;
-  toValue: Optional<number>;
-  onChangeFrom: (value: number) => void;
-  onChangeTo: (value: number) => void;
+  label: string
+  options: 'date'
+  fromValue: Optional<number>
+  toValue: Optional<number>
+  onChangeFrom: (value: number) => void
+  onChangeTo: (value: number) => void
 }
 interface ArrayFilterOption {
-  label: string;
-  options: any[],
-  value: any;
-  onChange: (value: any) => void;
+  label: string
+  options: any[]
+  value: any
+  onChange: (value: any) => void
 }
 
 interface MultilineOperatorFilterOption {
-  label: string;
-  options: 'multilineOperator';
-  linesValue: Optional<string[]>;
-  onChangeLines: (lines: string[]) => void;
-  operatorValue: Optional<Operator>;
-  onChangeOperator: (op: Operator | null) => void;
-  operatorOptions: Operator[];
+  label: string
+  options: 'multilineOperator'
+  linesValue: Optional<string[]>
+  onChangeLines: (lines: string[]) => void
+  operatorValue: Optional<Operator>
+  onChangeOperator: (op: Operator | null) => void
+  operatorOptions: Operator[]
 
 }
 
 export type FilterOption = ArrayFilterOption | DateFilterOption | MultilineOperatorFilterOption
 interface FilterProps {
-  clearFilters: VoidFunction;
-  submitFilters: VoidFunction;
-  filterOptions: FilterOption[];
+  clearFilters: VoidFunction
+  submitFilters: VoidFunction
+  filterOptions: FilterOption[]
 }
 
-export const SessionFilter = (props: FilterProps) => {
-  const [drawerState, setDrawerState] = useState<boolean>(false);
+export const SessionFilter = (props: FilterProps): JSX.Element => {
+  const [drawerState, setDrawerState] = useState<boolean>(false)
 
-  const filterTitle = 'Filters';
-  const textClear = 'Clear';
-  const textSearch = 'Search';
+  const filterTitle = 'Filters'
+  const textClear = 'Clear'
+  const textSearch = 'Search'
 
-  const toggleState = () => {
-    setDrawerState(!drawerState);
-  };
+  const toggleState = (): void => {
+    setDrawerState(!drawerState)
+  }
 
   return (
     <Box sx={{ float: 'right', mb: '16px' }}>
@@ -80,8 +76,8 @@ export const SessionFilter = (props: FilterProps) => {
         formatAndCallSetFilters={props.submitFilters}
       />
     </Box>
-  );
-};
+  )
+}
 
 export const SearchFooter = styled(Box)({
   position: 'absolute',
@@ -90,28 +86,28 @@ export const SearchFooter = styled(Box)({
   width: '100%',
   height: '86px',
   padding: '1rem',
-  backgroundColor: '#a3a6b4',
-});
+  backgroundColor: '#a3a6b4'
+})
 
 export const SearchHeader = styled(Box)({
   display: 'flex',
   justifyContent: 'space-between',
   background: '#f3f3f3',
-  padding: '18px',
-});
+  padding: '18px'
+})
 
 interface SearchFilterProps {
-  filterOptions: FilterOption[];
-  drawerState: boolean;
-  toggleState: VoidFunction;
-  title: string;
-  btnTxtSearch: string;
-  btnTxtClear: string;
-  resetFilters: VoidFunction;
-  formatAndCallSetFilters: VoidFunction;
+  filterOptions: FilterOption[]
+  drawerState: boolean
+  toggleState: VoidFunction
+  title: string
+  btnTxtSearch: string
+  btnTxtClear: string
+  resetFilters: VoidFunction
+  formatAndCallSetFilters: VoidFunction
 }
 
-export const SearchFilter = (props: SearchFilterProps) => {
+export const SearchFilter = (props: SearchFilterProps): JSX.Element => {
   const {
     filterOptions,
     drawerState,
@@ -120,23 +116,22 @@ export const SearchFilter = (props: SearchFilterProps) => {
     btnTxtSearch,
     btnTxtClear,
     resetFilters,
-    formatAndCallSetFilters,
-  } = props;
+    formatAndCallSetFilters
+  } = props
 
-  const renderComponents = (filterOption: FilterOption) => {
-    const {options} = filterOption;
+  const renderComponents = (filterOption: FilterOption): JSX.Element | undefined => {
+    const { options } = filterOption
     if (options === 'date') {
-      const {label, fromValue, toValue, onChangeFrom, onChangeTo} = filterOption;
+      const { label, fromValue, toValue, onChangeFrom, onChangeTo } = filterOption
       return DateTimeFilter(label, fromValue, toValue, onChangeFrom, onChangeTo)
     } else if (options === 'multilineOperator') {
-      const {label, linesValue, onChangeLines, operatorValue, onChangeOperator, operatorOptions} = filterOption;
-      return MultilineOperatorFilter(label, linesValue, onChangeLines, operatorValue, onChangeOperator, operatorOptions);
+      const { label, linesValue, onChangeLines, operatorValue, onChangeOperator, operatorOptions } = filterOption
+      return MultilineOperatorFilter(label, linesValue, onChangeLines, operatorValue, onChangeOperator, operatorOptions)
     } else if (Array.isArray(options)) {
-      const {label, value, onChange} = filterOption;
-      return renderSearchableFilter(label, value, onChange, options);
+      const { label, value, onChange } = filterOption
+      return renderSearchableFilter(label, value, onChange, options)
     }
-  };
-
+  }
 
   return (
     <Drawer anchor="right" open={drawerState} onClose={toggleState}>
@@ -148,7 +143,7 @@ export const SearchFilter = (props: SearchFilterProps) => {
       </SearchHeader>
       {filterOptions.map((fop, i) => {
         return (
-          <Accordion key={`search-filter-${fop.label}-${i}`} disableGutters={true} sx={{overflow: 'scroll'}}>
+          <Accordion key={`search-filter-${fop.label}-${i}`} disableGutters={true} sx={{ overflow: 'scroll' }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1bh-content"
@@ -160,7 +155,7 @@ export const SearchFilter = (props: SearchFilterProps) => {
             </AccordionSummary>
             <AccordionDetails>{renderComponents(fop)}</AccordionDetails>
           </Accordion>
-        );
+        )
       })}
       <SearchFooter>
         <Button color="cancel" sx={{ mr: 1 }} onClick={resetFilters}>
@@ -179,5 +174,5 @@ export const SearchFilter = (props: SearchFilterProps) => {
         </Button>
       </SearchFooter>
     </Drawer>
-  );
-};
+  )
+}

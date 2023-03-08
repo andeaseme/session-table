@@ -1,32 +1,32 @@
-import { CSSProperties } from 'react';
-import { styled } from '@mui/material/styles';
-import { TableContainer  } from '@mui/material';
+import { type CSSProperties } from 'react'
+import { styled } from '@mui/material/styles'
+import { TableContainer } from '@mui/material'
 
 export const cellMW160: CSSProperties = {
   maxWidth: 160,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap'
-};
+}
 export const cellComment: CSSProperties = {
   maxWidth: 200,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-  paddingLeft: 0,
-};
+  paddingLeft: 0
+}
 
 export const cellIconSpacing: CSSProperties = {
   paddingLeft: 0.3,
   paddingRight: 0.3,
-  maxWidth: 24,
-};
+  maxWidth: 24
+}
 export const cellDateTime: CSSProperties = {
   maxWidth: 192,
   minWidth: 192,
   overflow: 'hidden',
   background: 'transparent'
-};
+}
 
 export const SessionsTableContainer = styled(TableContainer)({
   height: 'calc(100vh - 286px)',
@@ -35,16 +35,14 @@ export const SessionsTableContainer = styled(TableContainer)({
   mr: -1,
   borderTop: '1px solid #eee',
   width: '100%'
-});
-
+})
 
 export const firstLetterStyle = {
   textTransform: 'none',
   '::first-letter': {
-    textTransform: 'uppercase',
-  },
-};
-
+    textTransform: 'uppercase'
+  }
+}
 
 // export const cellDateTimeL: CSSProperties = {
 //   maxWidth: 206,
