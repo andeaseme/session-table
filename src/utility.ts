@@ -1,7 +1,26 @@
 import * as moment from 'moment';
 
+export interface Session {
+  ID: string;
+  device_id: string;
+  bt: number;
+  tt: number;
+  sr: number;
+  bit_depth: number;
+  channels: {
+    name: string;
+    description: string;
+  }[];
+  annotations: {
+    name: string;
+    bt: number;
+    tt: number;
+  }[];
+}
 
+export type Operator = 'and' | 'or'
 
+export type Optional<T> = T | null | undefined
 
 /**
  * Timestamp is expected to be in milliseconds

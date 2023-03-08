@@ -1,40 +1,20 @@
-export interface Session {
-  ID: string;
-  device_id: string;
-  bt: number;
-  tt: number;
-  sr: number;
-  bit_depth: number;
-  channels: {
-    name: string;
-    description: string;
-  }[];
-  annotations: {
-    name: string;
-    bt: number;
-    tt: number;
-  }[];
-}
-
-type Operator = 'and' | 'or'
-
-type Optional<T> = T | null
+import {Operator, Optional, Session} from "./utility";
 
 export interface SessionFilterOptions {
-  device_ids: string[];
-  from_bt: number;
-  to_bt: number;
-  from_tt: number;
-  to_tt: number;
-  annotations: {
+  device_ids: Optional<string[]>;
+  from_bt: Optional<number>;
+  to_bt: Optional<number>;
+  from_tt: Optional<number>;
+  to_tt: Optional<number>;
+  annotations?: Optional<{
     names: string;
     operator: Operator;
-  };
-  channels: {
-    names: string;
+  }>;
+  channels: Optional<{
+    names: string[];
     operator: Operator;
-  };
-  sr: number;
+  }>;
+  sr: Optional<number>;
 }
 
 export interface SessionSortOptions {
@@ -60,23 +40,30 @@ const mockAnnotations = (start: number, stop: number, step: number, tag: string)
 }
 
 const mockSessionGen = (n=10): Session[] => {
-  const sessions = []
-  const timeStep = 600000000
+  const sessions = [];
+  const timeStep = 600000000;
+  const sampleRates = [44100, 48000] ;
   for(let i = 0; i < n; i++) {
     const bt = 1677672000000000 + (i * timeStep)
     const tt = 1677672000000000 + ((i+1) * timeStep)
+    const channels = [];
+    for(let j = 0; j < i%4 + 1; j++) {
+      channels.push(
+        {
+          name: `ch${j}sr${sampleRates[i%2]}`,
+          description: 'microphone',
+        }
+      )
+    }
     sessions.push(
       {
         ID: `mockSession${i}`,
         device_id: `deviceId${i % 2 + 1}`,
         bt,
         tt,
-        sr: 44100,
+        sr: sampleRates[i%2],
         bit_depth: 8,
-        channels: [{
-          name: 'channel-0',
-          description: 'microphone',
-        }],
+        channels: channels,
         annotations: mockAnnotations(bt, tt, timeStep/ 10, `tag${i % 2 + 1}`),
       }
     );
@@ -89,12 +76,13 @@ const mockSessions: Session[] = mockSessionGen(100)
 
 const filterSessions = (f: SessionFilterOptions, sessions=mockSessions) => {
   // partially implemented for testing
-  return sessions.filter((s) => {
-    const {from_bt, to_bt, from_tt, to_tt} = f
+  const _sessions = [...sessions];
+  return _sessions.filter((s) => {
+    const {from_bt, to_bt, from_tt, to_tt, sr, channels} = f;
     if (from_bt != null && s.bt < from_bt) {
       return false;
     }
-    if (to_bt != null && s.bt > from_bt) {
+    if (to_bt != null && s.bt > to_bt) {
       return false;
     }
     if (from_tt != null && s.tt < from_tt) {
@@ -102,6 +90,18 @@ const filterSessions = (f: SessionFilterOptions, sessions=mockSessions) => {
     }
     if (to_tt != null && s.tt > to_tt) {
       return false;
+    }
+    if (sr != null && s.sr !== sr) {
+      return false;
+    }
+    if (channels != null) {
+      const {names, operator} = channels;
+      if (operator === 'and' && !names.every((includeName) => s.channels.some(({name}) => name === includeName))) {
+        return false;
+      } else if (operator === 'or' && !s.channels.some(({name}) => names.includes(name))) {
+        return false;
+      }
+
     }
     return true;
   })

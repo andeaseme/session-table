@@ -9,8 +9,9 @@ import {
   TableRow,
 } from '@mui/material';
 
-import {ReviewSessionsTableContainer} from "./tableStyles";
+import {SessionsTableContainer} from "./tableStyles";
 import {Column, Row } from './Row';
+import {FilterOption, SessionFilter} from "./Filter";
 
 // import SearchUploadBtn from "../_reference_code_table/components/SearchUploadBtn";
 
@@ -28,13 +29,16 @@ const renderHeaders = (columns: Column[]) => {
 interface TableProps {
   data: any[];
   columns: Column[]
+  clearFilters: VoidFunction;
+  submitFilters: VoidFunction;
+  filterOptions: FilterOption[];
 }
 
 export const SessionTable = (props: TableProps) => {
   return (
     <Box>
-      {/*<SearchUploadBtn/>*/}
-      <ReviewSessionsTableContainer sx={{ borderTop: '1px solid #eee', width: '100%'}}>
+      <SessionFilter clearFilters={props.clearFilters} submitFilters={props.submitFilters} filterOptions={props.filterOptions}/>
+      <SessionsTableContainer sx={{ borderTop: '1px solid #eee', width: '100%'}}>
         <Table size="small" sx={{marginBottom: 1}} stickyHeader>
           <TableHead sx={{borderBottom: '1px solid #eee'}}>
             <TableRow>
@@ -52,7 +56,7 @@ export const SessionTable = (props: TableProps) => {
                   columns={props.columns}
                   isExpanded={false}
                   onClickExpand={() => null}
-                  onSelectSession={() => null}
+                  onSelectSession={() => console.log(v)}
                 />
               ))}</>
               :
@@ -62,7 +66,7 @@ export const SessionTable = (props: TableProps) => {
             }
           </TableBody>
         </Table>
-      </ReviewSessionsTableContainer>
+      </SessionsTableContainer>
     </Box>
   );
 }

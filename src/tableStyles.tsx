@@ -28,7 +28,7 @@ export const cellDateTime: CSSProperties = {
   background: 'transparent'
 };
 
-export const ReviewSessionsTableContainer = styled(TableContainer)({
+export const SessionsTableContainer = styled(TableContainer)({
   height: 'calc(100vh - 286px)',
   overflow: 'auto',
   ml: -1,
@@ -36,6 +36,15 @@ export const ReviewSessionsTableContainer = styled(TableContainer)({
   borderTop: '1px solid #eee',
   width: '100%'
 });
+
+
+export const firstLetterStyle = {
+  textTransform: 'none',
+  '::first-letter': {
+    textTransform: 'uppercase',
+  },
+};
+
 
 // export const cellDateTimeL: CSSProperties = {
 //   maxWidth: 206,
