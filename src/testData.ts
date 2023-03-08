@@ -7,7 +7,7 @@ export interface SessionFilterOptions {
   from_tt: Optional<number>;
   to_tt: Optional<number>;
   annotations?: Optional<{
-    names: string;
+    names: string[];
     operator: Operator;
   }>;
   channels: Optional<{
@@ -64,7 +64,7 @@ const mockSessionGen = (n=10): Session[] => {
         sr: sampleRates[i%2],
         bit_depth: 8,
         channels: channels,
-        annotations: mockAnnotations(bt, tt, timeStep/ 10, `tag${i % 2 + 1}`),
+        annotations: mockAnnotations(bt, tt, timeStep/ 10, `tag${i % 4 + 1}`),
       }
     );
   }
@@ -73,12 +73,20 @@ const mockSessionGen = (n=10): Session[] => {
 
 const mockSessions: Session[] = mockSessionGen(100)
 
+const filterByNamesOperator = (names: string[], operator: Operator, namedList: {name: string}[]) => {
+  if (operator === 'and' && !names.every((includeName) => namedList.some(({name}) => name === includeName))) {
+    return false;
+  } else if (operator === 'or' && !namedList.some(({name}) => names.includes(name))) {
+    return false;
+  }
+  return true;
+}
 
 const filterSessions = (f: SessionFilterOptions, sessions=mockSessions) => {
   // partially implemented for testing
   const _sessions = [...sessions];
   return _sessions.filter((s) => {
-    const {from_bt, to_bt, from_tt, to_tt, sr, channels} = f;
+    const {from_bt, to_bt, from_tt, to_tt, sr, channels, annotations} = f;
     if (from_bt != null && s.bt < from_bt) {
       return false;
     }
@@ -94,14 +102,11 @@ const filterSessions = (f: SessionFilterOptions, sessions=mockSessions) => {
     if (sr != null && s.sr !== sr) {
       return false;
     }
-    if (channels != null) {
-      const {names, operator} = channels;
-      if (operator === 'and' && !names.every((includeName) => s.channels.some(({name}) => name === includeName))) {
-        return false;
-      } else if (operator === 'or' && !s.channels.some(({name}) => names.includes(name))) {
-        return false;
-      }
-
+    if (channels != null && !filterByNamesOperator(channels.names, channels.operator, s.channels)) {
+      return false;
+    }
+    if (annotations != null && !filterByNamesOperator(annotations.names, annotations.operator, s.annotations)) {
+      return false;
     }
     return true;
   })

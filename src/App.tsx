@@ -28,6 +28,8 @@ function App() {
   const [sr, setSr] = useState<number | null>(null);
   const [channels, setChannels] = useState<string[] | null>(null);
   const [channelsOp, setChannelsOp] = useState<Operator | null>(null);
+  const [annotations, setAnnotations] = useState<string[] | null>(null);
+  const [annotationsOp, setAnnotationsOp] = useState<Operator | null>(null);
   const [data, setData] = useState<Session[]>(mockListSessions());
 
   const filterOptions: FilterOption[] = [
@@ -61,18 +63,28 @@ function App() {
       operatorValue: channelsOp,
       onChangeOperator: setChannelsOp,
       operatorOptions: ['and', 'or']
+    },
+    {
+      label: 'Annotations',
+      options: 'multilineOperator',
+      linesValue: annotations,
+      onChangeLines: setAnnotations,
+      operatorValue: annotationsOp,
+      onChangeOperator: setAnnotationsOp,
+      operatorOptions: ['and', 'or']
     }
   ]
 
   const submitFilters = () => {
     const chFilter = (channels != null && channelsOp != null) ? {names: channels, operator: channelsOp} : null;
+    const anFilter = (annotations != null && annotationsOp != null) ? {names: annotations, operator: annotationsOp} : null;
 
     const sessions = mockListSessions({
       from_bt: fromBt,
       to_bt: toBt,
       from_tt: fromTt,
       to_tt: toTt,
-      annotations: null,
+      annotations: anFilter,
       device_ids: null,
       channels: chFilter,
       sr: sr,
@@ -80,7 +92,7 @@ function App() {
     setData(sessions);
   }
   const clearFilters = () => {
-    [setFromBt, setToBt, setFromTt, setToTt, setSr, setChannels, setChannelsOp].forEach((setter) => setter(null));
+    [setFromBt, setToBt, setFromTt, setToTt, setSr, setChannels, setChannelsOp, setAnnotations, setAnnotationsOp,].forEach((setter) => setter(null));
   }
 
 
