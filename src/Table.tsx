@@ -1,18 +1,51 @@
 import React from 'react'
-
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
+import { visuallyHidden } from '@mui/utils'
 
 import { SessionsTableContainer } from './tableStyles'
-import { type Column, Row } from './Row'
+import { Row } from './Row'
 import { type FilterOption, SessionFilter } from './Filter'
 import { TablePaginationRowsPerPage } from './Pagination'
 
-// import SearchUploadBtn from "../_reference_code_table/components/SearchUploadBtn";
+export interface Column {
+  // eslint-disable-next-line @typescript-eslint/key-spacing
+  key: (string | ((data: any) => any))
+  label: string
+  sx: any
+  orderBy?: string
+}
 
-const renderHeaders = (columns: Column[]): JSX.Element => {
+const renderHeaders = (columns: Column[], orderBy: string, order: 'asc' | 'desc', onOrderChange: (orderBy: string) => void): JSX.Element => {
   return (
     <>
       {columns.map((c, i) => {
+        if (c.orderBy != null) {
+          return (
+            <TableCell
+              key={`header-${i}`}
+              sx={{ background: '#fff' }}
+              sortDirection={orderBy === c.orderBy ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === c.orderBy}
+                direction={orderBy === c.orderBy ? order : 'asc'}
+                onClick={() => {
+                  onOrderChange(c.orderBy as string)
+                }}
+              >
+                {c.label}
+                {orderBy === c.orderBy
+                  ? (
+                    <Box component="span" sx={visuallyHidden}>
+                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </Box>
+                    )
+                  : null}
+              </TableSortLabel>
+            </TableCell>
+          )
+        }
+
         return <TableCell key={`header-${i}`} sx={{ background: '#fff' }}>{c.label}</TableCell>
       })}
     </>
@@ -34,6 +67,9 @@ interface TableProps {
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => void
+  orderBy: string
+  order: 'asc' | 'desc'
+  onOrderChange: (orderBy: string) => void
 }
 
 export const SessionTable = (props: TableProps): JSX.Element => {
@@ -46,7 +82,7 @@ export const SessionTable = (props: TableProps): JSX.Element => {
           <TableHead sx={{ borderBottom: '1px solid #eee' }}>
             <TableRow>
               <TableCell sx={{ background: '#fff' }} colSpan={1}/>
-              {renderHeaders(props.columns)}
+              {renderHeaders(props.columns, props.orderBy, props.order, props.onOrderChange)}
               <TableCell sx={{ background: '#fff' }} colSpan={1}/>
             </TableRow>
           </TableHead>

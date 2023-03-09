@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { otosenseTheme2022 } from '@otosense/components'
 import { ThemeProvider } from '@mui/material/styles'
 
-import { SessionTable } from './Table'
+import { type Column, SessionTable } from './Table'
 import { formatSessionTime, type Operator, type Optional, type Session } from './utility'
 import { type FilterOption } from './Filter'
-import { type Column } from './Row'
 import { cellDateTime, cellMW160 } from './tableStyles'
 import {
   type PaginationOptions,
@@ -22,10 +21,20 @@ interface OtoTableProps {
 }
 
 const columns: Column[] = [
-  { label: 'Start Date', sx: cellDateTime, key: (s: Session) => formatSessionTime(+s.bt) },
-  { label: 'End Date', sx: cellDateTime, key: (s: Session) => formatSessionTime(+s.tt) },
+  {
+    label: 'Start Date',
+    sx: cellDateTime,
+    key: (s: Session) => formatSessionTime(+s.bt),
+    orderBy: 'bt'
+  },
+  {
+    label: 'End Date',
+    sx: cellDateTime,
+    key: (s: Session) => formatSessionTime(+s.tt),
+    orderBy: 'tt'
+  },
   { label: 'Duration (sec)', sx: cellMW160, key: (s: Session) => `${(s.tt - s.bt) / 1e6}` },
-  { label: 'Sample Rate (Hz)', sx: cellMW160, key: 'sr' },
+  { label: 'Sample Rate (Hz)', sx: cellMW160, key: 'sr', orderBy: 'sr' },
   { label: 'Bit Depth', sx: cellMW160, key: 'bit_depth' }
 ]
 
@@ -41,10 +50,11 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
   const [annotationsOp, setAnnotationsOp] = useState<Operator | null>(null)
   const [rowsPerPage, setRowsPerPage] = useState<number>(50)
   const [page, setPage] = useState<number>(0)
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc')
+  const [orderBy, setOrderBy] = useState<string>('bt')
   const [data, setData] = useState<Session[]>([])
 
-  const getSessions = (x: any = null): Session[] => {
-    console.log('getSessions', x)
+  const getSessions = (): Session[] => {
     const chFilter = (channels != null && channelsOp != null)
       ? {
           names: channels,
@@ -72,7 +82,7 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
       channels: chFilter,
       sr
     },
-    null,
+    { field: orderBy as SessionSortOptions['field'], mode: order },
     pagination
     )
   }
@@ -142,8 +152,16 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
     setPage(0)
   }
 
-  useEffect(submitFilters, [page])
-  useEffect(() => { setPage(0) }, [fromBt, toBt, fromTt, toTt, sr, channels, channelsOp, annotations, annotationsOp])
+  const onOrderChange = (orderBy: string): void => {
+    setOrderBy(orderBy)
+    setOrder(order === 'asc' ? 'desc' : 'asc')
+    setPage(0)
+  }
+
+  useEffect(submitFilters, [page, order, orderBy, rowsPerPage])
+  useEffect(() => {
+    setPage(0)
+  }, [fromBt, toBt, fromTt, toTt, sr, channels, channelsOp, annotations, annotationsOp, rowsPerPage])
 
   return (
     <ThemeProvider theme={otosenseTheme2022}>
@@ -158,6 +176,9 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
         onRowsPerPageChange={onRowsPerPageChange}
         page={page}
         onPageChange={onPageChange}
+        orderBy={orderBy}
+        order={order}
+        onOrderChange={onOrderChange}
       />
     </ThemeProvider>
   )

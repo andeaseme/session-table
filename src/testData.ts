@@ -114,22 +114,23 @@ const filterSessions = (f: SessionFilterOptions, sessions = mockSessions): Sessi
 }
 
 const sortSessions = (sort: SessionSortOptions, sessions: Session[]): Session[] => {
-  if (sessions?.length > 0) {
+  let _sessions = [...sessions]
+  if (_sessions?.length > 0) {
     if (sort.field === 'device_id') {
       if (sort.mode === 'asc') {
-        sessions.sort((a, b) => a.device_id.localeCompare(b.device_id))
+        _sessions = _sessions.sort((a, b) => a.device_id.localeCompare(b.device_id))
       } else {
-        sessions.sort((b, a) => a.device_id.localeCompare(b.device_id))
+        _sessions = _sessions.sort((b, a) => a.device_id.localeCompare(b.device_id))
       }
     } else {
       if (sort.mode === 'asc') {
-        sessions.sort((a, b) => {
+        _sessions = _sessions.sort((a, b) => {
           const x = a[sort.field] as number
           const y = b[sort.field] as number
           return x - y
         })
       } else {
-        sessions.sort((b, a) => {
+        _sessions = _sessions.sort((b, a) => {
           const x = a[sort.field] as number
           const y = b[sort.field] as number
           return x - y
@@ -137,7 +138,7 @@ const sortSessions = (sort: SessionSortOptions, sessions: Session[]): Session[] 
       }
     }
   }
-  return sessions
+  return _sessions
 }
 
 export const mockListSessions = (

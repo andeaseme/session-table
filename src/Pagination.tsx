@@ -40,7 +40,6 @@ const TablePaginationActions = (props: TablePaginationActionsProps): JSX.Element
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
-        // disabled={rsStore.pageNum >= Math.ceil(rsStore.totalFilteredSessions / rsStore.rowsPerPage) - 1}
         aria-label="next page"
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft/> : <KeyboardArrowRight/>}

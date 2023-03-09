@@ -6,13 +6,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { CenterBox } from '@otosense/components'
 
 import { cellIconSpacing } from './tableStyles'
-
-export interface Column {
-  // eslint-disable-next-line @typescript-eslint/key-spacing
-  key: (string | ((data: any) => any))
-  label: string
-  sx: any
-}
+import { type Column } from './Table'
 
 export interface RowProps {
   isExpanded: boolean
