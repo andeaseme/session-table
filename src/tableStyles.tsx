@@ -44,6 +44,16 @@ export const firstLetterStyle = {
   }
 }
 
+export const centerTableFooter: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  width: 'calc(100% - 96px)',
+  position: 'fixed',
+  bottom: 0,
+  borderTop: '1px solid lightgray',
+  background: 'white'
+}
+
 // export const cellDateTimeL: CSSProperties = {
 //   maxWidth: 206,
 //   minWidth: 206,
@@ -59,15 +69,6 @@ export const firstLetterStyle = {
 //   maxWidth: 43
 // };
 //
-// export const centerTableFooter: CSSProperties = {
-//   display: 'flex',
-//   justifyContent: 'center',
-//   width: 'calc(100% - 96px)',
-//   position: 'fixed',
-//   bottom: 0,
-//   borderTop: '1px solid lightgray',
-//   background: 'white',
-// };
 //
 // export const StyledCollapse = styled(Collapse)({
 //   backgroundColor: 'rgba(0,161,192, 0.05)'
