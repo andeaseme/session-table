@@ -47,5 +47,6 @@ export const centerTableFooter: CSSProperties = {
   background: 'white'
 }
 export const StyledCollapse = styled(Collapse)({
-  backgroundColor: 'rgba(0,161,192, 0.05)'
+  backgroundColor: 'rgba(0,161,192, 0.05)',
+  paddingLeft: '100px'
 })
