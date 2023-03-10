@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 
@@ -70,19 +70,31 @@ interface TableProps {
   orderBy: string
   order: 'asc' | 'desc'
   onOrderChange: (orderBy: string) => void
+  renderExpandedData: (data: any) => JSX.Element
 }
 
 export const SessionTable = (props: TableProps): JSX.Element => {
+  const [expandedRow, setExpandedRow] = useState<number>(-1)
+  const collapseWrap = (f: (...args: any[]) => void): VoidFunction => {
+    return (...args) => {
+      setExpandedRow(-1)
+      f(...args)
+    }
+  }
+
   return (
     <Box>
-      <SessionFilter clearFilters={props.clearFilters} submitFilters={props.submitFilters}
-                     filterOptions={props.filterOptions}/>
+      <SessionFilter
+        clearFilters={props.clearFilters}
+        submitFilters={collapseWrap(props.submitFilters)}
+        filterOptions={props.filterOptions}
+      />
       <SessionsTableContainer sx={{ borderTop: '1px solid #eee', width: '100%' }}>
         <Table size="small" sx={{ marginBottom: 1 }} stickyHeader>
           <TableHead sx={{ borderBottom: '1px solid #eee' }}>
             <TableRow>
               <TableCell sx={{ background: '#fff' }} colSpan={1}/>
-              {renderHeaders(props.columns, props.orderBy, props.order, props.onOrderChange)}
+              {renderHeaders(props.columns, props.orderBy, props.order, collapseWrap(props.onOrderChange))}
               <TableCell sx={{ background: '#fff' }} colSpan={1}/>
             </TableRow>
           </TableHead>
@@ -94,11 +106,14 @@ export const SessionTable = (props: TableProps): JSX.Element => {
                   id={`row-${i}`}
                   data={v}
                   columns={props.columns}
-                  isExpanded={false}
-                  onClickExpand={() => null}
+                  isExpanded={i === expandedRow}
+                  onClickExpand={() => {
+                    setExpandedRow(i !== expandedRow ? i : -1)
+                  }}
                   onSelectSession={() => {
                     console.log(v)
                   }}
+                  renderExpandedData={() => props.renderExpandedData(v)}
                 />
               ))}</>
               : <TableRow>
@@ -108,9 +123,9 @@ export const SessionTable = (props: TableProps): JSX.Element => {
           </TableBody>
           <TablePaginationRowsPerPage
             rowsPerPage={props.rowsPerPage}
-            onRowsPerPageChange={props.onRowsPerPageChange}
+            onRowsPerPageChange={collapseWrap(props.onRowsPerPageChange)}
             page={props.page}
-            onPageChange={props.onPageChange}
+            onPageChange={collapseWrap(props.onPageChange)}
           />
         </Table>
       </SessionsTableContainer>

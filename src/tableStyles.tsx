@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react'
 import { styled } from '@mui/material/styles'
-import { TableContainer } from '@mui/material'
+import { Collapse, TableContainer } from '@mui/material'
 
 export const cellMW160: CSSProperties = {
   maxWidth: 160,
@@ -46,3 +46,6 @@ export const centerTableFooter: CSSProperties = {
   borderTop: '1px solid lightgray',
   background: 'white'
 }
+export const StyledCollapse = styled(Collapse)({
+  backgroundColor: 'rgba(0,161,192, 0.05)'
+})

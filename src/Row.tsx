@@ -7,10 +7,12 @@ import { CenterBox } from '@otosense/components'
 
 import { cellIconSpacing } from './tableStyles'
 import { type Column } from './Table'
+import { CollapsedContents } from './CollapsedContents'
 
 export interface RowProps {
   isExpanded: boolean
   onClickExpand: VoidFunction
+  renderExpandedData: () => JSX.Element
   onSelectSession: VoidFunction
   data: any
   columns: Column[]
@@ -42,5 +44,6 @@ export const Row = (props: RowProps): JSX.Element => (
         </CenterBox>
       </TableCell>
     </TableRow>
+    <CollapsedContents isExpanded={props.isExpanded} renderData={props.renderExpandedData}/>
   </React.Fragment>
 )

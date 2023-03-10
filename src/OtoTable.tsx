@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { otosenseTheme2022 } from '@otosense/components'
+import { FlexBox, otosenseTheme2022 } from '@otosense/components'
 import { ThemeProvider } from '@mui/material/styles'
+import { Box, Grid, Stack, Typography } from '@mui/material'
 
 import { type Column, SessionTable } from './Table'
 import { formatSessionTime, type Operator, type Optional, type Session } from './utility'
@@ -158,6 +159,47 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
     setPage(0)
   }
 
+  const renderExpandedSession = (s: Session): JSX.Element => {
+    const occurrences = s.annotations.reduce((acc: Record<string, number>, { name }) => {
+      (acc[name] != null) ? ++acc[name] : acc[name] = 1
+      return acc
+    }, {})
+    return (
+      <Grid container>
+        <Grid item sm={4}>
+          <Stack direction="row">
+            <Box>{'Channels'}</Box>:
+            <Stack mt={'5px'} ml={0}>
+              {s.channels.map((c, i) => {
+                return (
+                  <FlexBox key={`channel-${i}`} ml={1}>
+                    <Typography variant="h4">{c.name}-</Typography>
+                    <Typography variant="h5" mr={0.5}>{c.description}</Typography>
+                  </FlexBox>
+                )
+              })}
+            </Stack>
+          </Stack>
+        </Grid>
+        <Grid item sm={4}>
+          <Stack direction="row">
+            <Box>{'Annotation Occurrences'}</Box>:
+            <Stack mt={'5px'} ml={0}>
+              {Object.entries(occurrences).map(([name, count], i) => {
+                return (
+                  <FlexBox key={`occurances-${i}`} ml={1}>
+                    <Typography variant="h4">{name}-</Typography>
+                    <Typography variant="h5" mr={0.5}>{count}</Typography>
+                  </FlexBox>
+                )
+              })}
+            </Stack>
+          </Stack>
+        </Grid>
+      </Grid>
+    )
+  }
+
   useEffect(submitFilters, [page, order, orderBy, rowsPerPage])
   useEffect(() => {
     setPage(0)
@@ -179,6 +221,7 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
         orderBy={orderBy}
         order={order}
         onOrderChange={onOrderChange}
+        renderExpandedData={renderExpandedSession}
       />
     </ThemeProvider>
   )

@@ -27,14 +27,16 @@ export interface PaginationOptions {
   to_idx: number
 }
 
-const mockAnnotations = (start: number, stop: number, step: number, tag: string): Session['annotations'] => {
+const mockAnnotations = (start: number, stop: number, step: number, tag: number): Session['annotations'] => {
   const annotations = []
-  for (let i = start; i < stop + step; i += step) {
+  let t = 1
+  for (let i = start; i < stop; i += step) {
     annotations.push({
-      name: tag,
+      name: `tag${t}`,
       bt: i,
       tt: i + step
     })
+    t = t % tag + 1
   }
   return annotations
 }
@@ -64,7 +66,7 @@ const mockSessionGen = (n = 10): Session[] => {
         sr: sampleRates[i % 2],
         bit_depth: 8,
         channels,
-        annotations: mockAnnotations(bt, tt, timeStep / 10, `tag${i % 4 + 1}`)
+        annotations: mockAnnotations(bt, tt, timeStep / 10, i % 5 + 1)
       }
     )
   }
