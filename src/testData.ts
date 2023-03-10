@@ -52,7 +52,7 @@ const mockSessionGen = (n = 10): Session[] => {
     for (let j = 0; j < i % 4 + 1; j++) {
       channels.push(
         {
-          name: `ch${j}sr${sampleRates[i % 2]}`,
+          name: `ch${j}`,
           description: 'microphone'
         }
       )
