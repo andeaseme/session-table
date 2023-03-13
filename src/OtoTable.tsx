@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { FlexBox, otosenseTheme2022 } from '@otosense/components'
-import { ThemeProvider } from '@mui/material/styles'
 import { Box, Grid, Stack, Typography } from '@mui/material'
 
 import { type Column, SessionTable } from './Table'
@@ -187,7 +186,7 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
             <Stack mt={'5px'} ml={0}>
               {Object.entries(occurrences).map(([name, count], i) => {
                 return (
-                  <FlexBox key={`occurances-${i}`} ml={1}>
+                  <FlexBox key={`occurrences-${i}`} ml={1}>
                     <Typography variant="h4">{name}-</Typography>
                     <Typography variant="h5" mr={0.5}>{count}</Typography>
                   </FlexBox>
@@ -206,23 +205,21 @@ export const OtoTable = (props: OtoTableProps): JSX.Element => {
   }, [fromBt, toBt, fromTt, toTt, sr, channels, channelsOp, annotations, annotationsOp, rowsPerPage])
 
   return (
-    <ThemeProvider theme={otosenseTheme2022}>
-      <SessionTable
-        data={data}
-        columns={columns}
-        key={'ID'}
-        clearFilters={clearFilters}
-        submitFilters={submitFilters}
-        filterOptions={filterOptions}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={onRowsPerPageChange}
-        page={page}
-        onPageChange={onPageChange}
-        orderBy={orderBy}
-        order={order}
-        onOrderChange={onOrderChange}
-        renderExpandedData={renderExpandedSession}
-      />
-    </ThemeProvider>
+    <SessionTable
+      theme={otosenseTheme2022}
+      data={data}
+      columns={columns}
+      clearFilters={clearFilters}
+      submitFilters={submitFilters}
+      filterOptions={filterOptions}
+      rowsPerPage={rowsPerPage}
+      onRowsPerPageChange={onRowsPerPageChange}
+      page={page}
+      onPageChange={onPageChange}
+      orderBy={orderBy}
+      order={order}
+      onOrderChange={onOrderChange}
+      renderExpandedData={renderExpandedSession}
+    />
   )
 }

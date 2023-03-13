@@ -1,11 +1,21 @@
 import React, { useState } from 'react'
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  type Theme,
+  ThemeProvider
+} from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
-
 import { SessionsTableContainer } from './tableStyles'
 import { Row } from './Row'
 import { type FilterOption, SessionFilter } from './Filter'
 import { TablePaginationRowsPerPage } from './Pagination'
+import { otosenseTheme2022 } from '@otosense/components'
 
 export interface Column {
   // eslint-disable-next-line @typescript-eslint/key-spacing
@@ -53,6 +63,7 @@ const renderHeaders = (columns: Column[], orderBy: string, order: 'asc' | 'desc'
 }
 
 interface TableProps {
+  theme?: Theme
   data: any[]
   columns: Column[]
   clearFilters: VoidFunction
@@ -83,52 +94,54 @@ export const SessionTable = (props: TableProps): JSX.Element => {
   }
 
   return (
-    <Box>
-      <SessionFilter
-        clearFilters={props.clearFilters}
-        submitFilters={collapseWrap(props.submitFilters)}
-        filterOptions={props.filterOptions}
-      />
-      <SessionsTableContainer sx={{ borderTop: '1px solid #eee', width: '100%' }}>
-        <Table size="small" sx={{ marginBottom: 1 }} stickyHeader>
-          <TableHead sx={{ borderBottom: '1px solid #eee' }}>
-            <TableRow>
-              <TableCell sx={{ background: '#fff' }} colSpan={1}/>
-              {renderHeaders(props.columns, props.orderBy, props.order, collapseWrap(props.onOrderChange))}
-              <TableCell sx={{ background: '#fff' }} colSpan={1}/>
-            </TableRow>
-          </TableHead>
-          <TableBody sx={{ marginBottom: 64 }}>
-            {props.data?.length > 0
-              ? <>{props.data.map((v, i) => (
-                <Row
-                  key={`row-${i}`}
-                  id={`row-${i}`}
-                  data={v}
-                  columns={props.columns}
-                  isExpanded={i === expandedRow}
-                  onClickExpand={() => {
-                    setExpandedRow(i !== expandedRow ? i : -1)
-                  }}
-                  onSelectSession={() => {
-                    console.log(v)
-                  }}
-                  renderExpandedData={() => props.renderExpandedData(v)}
-                />
-              ))}</>
-              : <TableRow>
-                <TableCell colSpan={9} sx={{ textAlign: 'center' }}>{'No Data'}</TableCell>
+    <ThemeProvider theme={props.theme ?? otosenseTheme2022}>
+      <Box>
+        <SessionFilter
+          clearFilters={props.clearFilters}
+          submitFilters={collapseWrap(props.submitFilters)}
+          filterOptions={props.filterOptions}
+        />
+        <SessionsTableContainer sx={{ borderTop: '1px solid #eee', width: '100%' }}>
+          <Table size="small" sx={{ marginBottom: 1 }} stickyHeader>
+            <TableHead sx={{ borderBottom: '1px solid #eee' }}>
+              <TableRow>
+                <TableCell sx={{ background: '#fff' }} colSpan={1}/>
+                {renderHeaders(props.columns, props.orderBy, props.order, collapseWrap(props.onOrderChange))}
+                <TableCell sx={{ background: '#fff' }} colSpan={1}/>
               </TableRow>
-            }
-          </TableBody>
-          <TablePaginationRowsPerPage
-            rowsPerPage={props.rowsPerPage}
-            onRowsPerPageChange={collapseWrap(props.onRowsPerPageChange)}
-            page={props.page}
-            onPageChange={collapseWrap(props.onPageChange)}
-          />
-        </Table>
-      </SessionsTableContainer>
-    </Box>
+            </TableHead>
+            <TableBody sx={{ marginBottom: 64 }}>
+              {props.data?.length > 0
+                ? <>{props.data.map((v, i) => (
+                  <Row
+                    key={`row-${i}`}
+                    id={`row-${i}`}
+                    data={v}
+                    columns={props.columns}
+                    isExpanded={i === expandedRow}
+                    onClickExpand={() => {
+                      setExpandedRow(i !== expandedRow ? i : -1)
+                    }}
+                    onSelectSession={() => {
+                      console.log(v)
+                    }}
+                    renderExpandedData={() => props.renderExpandedData(v)}
+                  />
+                ))}</>
+                : <TableRow>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center' }}>{'No Data'}</TableCell>
+                </TableRow>
+              }
+            </TableBody>
+            <TablePaginationRowsPerPage
+              rowsPerPage={props.rowsPerPage}
+              onRowsPerPageChange={collapseWrap(props.onRowsPerPageChange)}
+              page={props.page}
+              onPageChange={collapseWrap(props.onPageChange)}
+            />
+          </Table>
+        </SessionsTableContainer>
+      </Box>
+    </ThemeProvider>
   )
 }
